@@ -1,0 +1,87 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Pagos - Caja</title>
+    <!--
+    <link rel="stylesheet" href="../../static/payment_register/css/styles.css">
+    -->
+    <link rel="stylesheet" href="{% static 'payment_register/css/styles.css' %}">
+
+</head>
+<body>
+    <div class="container">
+        <h2>Registro de Pagos</h2>
+
+        <form method="POST" action="{% url 'index' %}">
+            {% csrf_token %}
+            
+            <label for="fecha">Fecha *</label>
+            <input type="date" id="fecha" name="fecha" required>
+
+            <label for="cajera">Cajera *</label>
+            <select id="cajera" name="cajera" required>
+                <option value="">Seleccione una opción</option>
+                <option value="Cajera 1">Cajera 1</option>
+                <option value="Cajera 2">Cajera 2</option>
+            </select>
+
+            <label for="remision">Remisión *</label>
+            <input type="number" id="remision" name="remision" required>
+
+            <label for="factura">Factura</label>
+            <input type="number" id="factura" name="factura">
+
+            <label for="efectivo">Efectivo *</label>
+            <input type="number" id="efectivo" name="efectivo" required step="0.01">
+
+            <label for="tarjeta">Tarjeta *</label>
+            <input type="number" id="tarjeta" name="tarjeta" required step="0.01">
+
+            <label for="anulada">Anulada</label>
+            <input type="text" id="anulada" name="anulada">
+
+            <label for="ch_posfechado">CH Posfechado</label>
+            <input type="text" id="ch_posfechado" name="ch_posfechado">
+
+            <label for="saldo_a_favor">Saldo a favor *</label>
+            <input type="number" id="saldo_a_favor" name="saldo_a_favor" required step="0.01">
+
+            <label for="pago_qr">Pago QR *</label>
+            <input type="number" id="pago_qr" name="pago_qr" required step="0.01">
+
+            <label for="observaciones">Observaciones</label>
+            <textarea id="observaciones" name="observaciones" rows="3"></textarea>
+
+            <button type="submit">Registrar Pago</button>
+        </form>
+    </div>
+
+    {% if messages %}
+    <div id="toast-container">
+        {% for message in messages %}
+            {% if message.tags == "success" %}
+                <div class="toast success">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Configurar un temporizador para desaparecer las notificaciones
+            setTimeout(function() {
+                const toast = document.querySelector('.toast');
+                if (toast) {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 1000);  // Remover después de 1 segundo
+                }
+            }, 3000);  // La notificación desaparecerá después de 3 segundos
+        });
+    </script>
+    
+</body>
+
+</html>
