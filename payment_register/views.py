@@ -2,6 +2,8 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from django.shortcuts import render, redirect
 from django.contrib import messages
+import json
+import os  # 👈 Para leer variables de entorno
 
 def index(request):
     if request.method == 'POST':
@@ -18,9 +20,16 @@ def index(request):
         pago_qr = request.POST.get('pago_qr')
         observaciones = request.POST.get('observaciones')
 
-        # Conectar con Google Sheets
-        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+        # Conectar con Google Sheets usando credenciales desde variables de entorno
+        scope = [
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive"
+        ]
+
+        # 👉 Leer las credenciales desde una variable de entorno
+        credentials_json = os.environ.get("GOOGLE_CREDENTIALS")
+        creds_dict = json.loads(credentials_json)
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
         # Abrir hoja y pestaña
@@ -33,7 +42,6 @@ def index(request):
         ], index=2)
 
         messages.success(request, "✅ Pago registrado correctamente.")
-
         return redirect('index')
 
     return render(request, 'payment_register/index.html')
